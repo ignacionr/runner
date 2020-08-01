@@ -17,9 +17,17 @@ int main()
     Sprite runner(renderer, "tile.png", 4, 7);
     Transportable tr(runner);
 
-    scene.add(tr, {-40, 220, 120, 80});
+    auto &main_character = scene.add(tr, {-40, 220, 120, 80});
     tr.towards({505, 220, 120, 80});
+    scene.interact([&](int cx, int _) {
+        SDL_Rect destination{main_character->area};
+        destination.x += cx * 20;
+        tr.towards(destination);
+    });
 
-    pump.run([&]() { scene.render(); }, 16, [](auto ev) {});
+    pump.run(
+        std::bind(&sdls::Scene::render, &scene),
+        16,
+        std::bind(&sdls::Scene::handle_event, &scene, std::placeholders::_1));
     return 0;
 }

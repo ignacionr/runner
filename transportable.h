@@ -14,8 +14,8 @@ public:
     {
         if (_position)
         {
-            _position->x += (_target.x - _position->x) / 50;
-            _position->y += (_target.y - _position->y) / 80;
+            _position->x += (_target.x - _position->x) / 15;
+            _position->y += (_target.y - _position->y) / 28;
         }
         _renderable.render();
     }

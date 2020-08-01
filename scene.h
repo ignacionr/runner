@@ -73,6 +73,12 @@ namespace sdls
             return *this;
         }
 
+        auto &interact(std::function<void(int, int)> moves)
+        {
+            _interactive = moves;
+            return *this;
+        }
+
         auto hit_test(int x, int y)
         {
             auto pos = std::find_if(
@@ -114,6 +120,25 @@ namespace sdls
                     pressed->get()->click();
                 }
             }
+            else if (ev->type == SDL_KEYDOWN && _interactive)
+            {
+                if (ev->key.keysym.scancode == SDL_SCANCODE_RIGHT)
+                {
+                    _interactive(ev->key.repeat + 1, 0);
+                }
+                else if (ev->key.keysym.scancode == SDL_SCANCODE_LEFT)
+                {
+                    _interactive(-ev->key.repeat - 1, 0);
+                }
+                else if (ev->key.keysym.scancode == SDL_SCANCODE_UP)
+                {
+                    _interactive(0, -ev->key.repeat - 1);
+                }
+                else if (ev->key.keysym.scancode == SDL_SCANCODE_DOWN)
+                {
+                    _interactive(0, ev->key.repeat + 1);
+                }
+            }
             return false;
         }
 
@@ -124,6 +149,7 @@ namespace sdls
         std::unique_ptr<Character> *_highlighted{nullptr};
         std::shared_ptr<sdl::Texture> _background_texture;
         SDL_Rect _background_source;
+        std::function<void(int, int)> _interactive;
     };
 
     class Chapter
