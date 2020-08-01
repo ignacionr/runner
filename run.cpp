@@ -3,6 +3,7 @@
 #include "sdladapters.h"
 #include "scene.h"
 #include "sprite.h"
+#include "transportable.h"
 
 int main()
 {
@@ -14,7 +15,10 @@ int main()
         ++rc.x %= (2338 - rc.w);
     });
     Sprite runner(renderer, "tile.png", 4, 7);
-    scene.add(runner, {5, 220, 120, 80});
+    Transportable tr(runner);
+
+    scene.add(tr, {-40, 220, 120, 80});
+    tr.towards({505, 220, 120, 80});
 
     pump.run([&]() { scene.render(); }, 16, [](auto ev) {});
     return 0;
