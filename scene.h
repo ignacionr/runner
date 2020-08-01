@@ -37,6 +37,19 @@ namespace sdls
             return *this;
         }
 
+        auto &background(const std::string_view &filename, SDL_Rect const &initialSource, std::function<void(SDL_Rect &)> move)
+        {
+            sdl::Surface surface(std::string(filename).c_str());
+            _background_texture = std::make_shared<sdl::Texture>(*_renderer, surface);
+            _background_source = initialSource;
+            _paint_background = [&]() {
+                _renderer->SetViewPort(nullptr);
+                _renderer->Copy(*_background_texture, &_background_source);
+                move(_background_source);
+            };
+            return *this;
+        }
+
         template <typename T>
         auto &add(T &renderable, SDL_Rect const &rc)
         {
@@ -110,6 +123,7 @@ namespace sdls
         std::list<std::unique_ptr<Character>> _characters;
         std::unique_ptr<Character> *_highlighted{nullptr};
         std::shared_ptr<sdl::Texture> _background_texture;
+        SDL_Rect _background_source;
     };
 
     class Chapter
